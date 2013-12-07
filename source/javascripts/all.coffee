@@ -13,15 +13,20 @@ days         = 0
 ev_points    = 0
 done         = false
 
-every = (sec,callback) ->
-  if WATCH is true
-    csec = Math.round ((new Date).getTime() - START)/1000
+timers = {}
+every = (key,sec,callback) ->
+  timers[key] ||=
+    watch : false
+    start : 0
+
+  if timers[key].watch is true
+    csec = Math.round ((new Date).getTime() - timers[key].start)/1000
     if csec >= sec
       callback()
-      WATCH = false
+      timers[key].watch = false
   else
-    START = (new Date).getTime()
-    WATCH = true
+    timers[key].start = (new Date).getTime()
+    timers[key].watch = true
 
 totals =
   population : 0
@@ -211,6 +216,8 @@ draw_game   = ->
   $(".total .population").html totals.population
   $(".total .infected").html   totals.infected
   $(".total .deaths").html     totals.deaths
+
+  $('.evolution_points .value').html window.Player.evolution_points
   redraw_sparklines()
 draw_pills =->
   $('.stat.lethality .pill').width   "#{(Player.lethality.cur/Player.lethality.max)*100}%"
@@ -266,10 +273,12 @@ mainloop = ->
       mainloop()
       if GameStart
         unless Pause
-          every Speed, ->
+          every 'ev', Speed*10, ->
+            window.Player.evolution_points++
+          every 'day', Speed, ->
             update_game()
             draw_game()
             render_map()
             draw_pills()
-          , (1000/60)
+    , (1000/60)
 mainloop()

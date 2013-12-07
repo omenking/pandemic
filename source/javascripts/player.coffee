@@ -1,4 +1,5 @@
 window.Player =
+  evolution_points: 10
   disease_name: ''
   disease_kind: 1
   disease_kind_name: ->
