@@ -1,3 +1,4 @@
+window.GameStart = false
 window.Pause = false
 window.Speed = 2
 nav     = 'disease'

@@ -186,6 +186,7 @@ $('.step_name .next').click ()->
   window.Player.disease_name = name
   $('.setup').hide()
   draw_game()
+  window.GameStart = true
 
 $('.fa-chevron-circle-up').click ()->
   unless window.Page is 1
@@ -263,11 +264,12 @@ mainloop = ->
   unless done
     setTimeout ->
       mainloop()
-      unless Pause
-        every Speed, ->
-          update_game()
-          draw_game()
-          render_map()
-        draw_pills()
-    , (1000/60)
+      if GameStart
+        unless Pause
+          every Speed, ->
+            update_game()
+            draw_game()
+            render_map()
+            draw_pills()
+          , (1000/60)
 mainloop()
